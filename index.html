@@ -3,47 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Osha's Adventure</title>
+    <title>Osha's School</title>
     <style>
-        :root { --osha-pink: #ff85a1; --osha-blue: #4db8ff; --osha-yellow: #ffd700; --osha-green: #63d471; --osha-purple: #a29bfe; }
+        :root { --osha-pink: #ff85a1; --osha-blue: #4db8ff; --osha-yellow: #ffd700; --osha-green: #63d471; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; 
             background: #fffaf0; font-family: -apple-system, sans-serif; touch-action: none; 
         }
 
-        /* Nav Bar */
+        /* Navigation - Small and Clean to save space */
         #nav {
-            height: 10%; width: 100%; background: white; border-bottom: 4px solid var(--osha-pink);
+            height: 8%; width: 100%; background: white; border-bottom: 3px solid var(--osha-pink);
             display: flex; justify-content: space-around; align-items: center; z-index: 1000; position: relative;
         }
-        .nav-btn { border: none; border-radius: 12px; color: white; font-weight: 900; font-size: 14px; padding: 8px; box-shadow: 0 3px #ccc; }
+        .nav-btn { border: none; border-radius: 10px; color: white; font-weight: 900; font-size: 13px; padding: 6px 12px; }
 
-        .screen { height: 90%; width: 100%; display: none; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 10px; }
+        .screen { height: 92%; width: 100%; display: none; flex-direction: column; align-items: center; justify-content: flex-start; }
         .active { display: flex; }
 
-        /* Match Card */
+        /* Match Section */
         .match-card {
             background: white; border: 6px solid var(--osha-blue); border-radius: 30px; 
-            padding: 15px; text-align: center; min-width: 260px; margin-bottom: 15px;
+            padding: 20px; text-align: center; min-width: 280px; margin-top: 20px; margin-bottom: 30px;
         }
-        .big-val { font-size: 90px; color: var(--osha-pink); font-weight: 900; line-height: 1; }
+        .big-val { font-size: 110px; color: var(--osha-pink); font-weight: 900; line-height: 1; margin: 0; }
 
-        /* Color & Stamp Toolbars */
-        .scroll-bar { 
-            display: flex; gap: 8px; width: 95%; overflow-x: auto; padding: 10px; 
-            background: white; border-radius: 20px; margin-bottom: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* Big Drawing Area */
+        .toolbar-container { width: 100%; background: white; padding: 5px 0; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .scroll-bar { display: flex; gap: 10px; width: 95%; overflow-x: auto; padding: 8px 5px; }
+        .dot { min-width: 40px; height: 40px; border-radius: 50%; border: 2px solid #eee; flex-shrink: 0; }
+        .stamp { font-size: 35px; background: none; border: none; flex-shrink: 0; padding: 0; }
+        .active-tool { border: 4px solid #333 !important; transform: scale(1.15); }
+
+        .canvas-container { 
+            position: relative; background: white; 
+            width: 95%; height: 65%; /* Much bigger drawing board */
+            border: 4px solid #ddd; border-radius: 20px; margin-top: 5px;
         }
-        .dot { min-width: 35px; height: 35px; border-radius: 50%; border: 2px solid #eee; flex-shrink: 0; }
-        .stamp { font-size: 30px; background: none; border: none; flex-shrink: 0; }
-        .active-tool { border: 3px solid #333 !important; transform: scale(1.1); }
+        #trace-hint { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            font-size: 350px; color: #f2f2f2; z-index: 0; font-weight: 900; pointer-events: none; 
+            font-style: normal;
+        }
+        canvas { display: block; z-index: 1; position: relative; width: 100%; height: 100%; touch-action: none; }
 
-        /* Canvas */
-        .canvas-container { position: relative; background: white; border: 5px solid #ddd; border-radius: 20px; }
-        #trace-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 180px; color: #f2f2f2; z-index: 0; font-weight: 900; pointer-events: none; }
-        
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; height: 300px; overflow-y: auto; padding: 20px; width: 100%; }
-        .grid-item { background: white; padding: 15px; border-radius: 15px; text-align: center; font-size: 25px; font-weight: bold; border: 2px solid #eee; }
+        /* Trace Picker Grid */
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; height: 100%; overflow-y: auto; padding: 20px; width: 100%; }
+        .grid-item { background: white; padding: 20px 10px; border-radius: 15px; text-align: center; font-size: 28px; font-weight: bold; border: 2px solid #ddd; }
         
         #starter { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--osha-pink); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; }
     </style>
@@ -51,23 +58,23 @@
 <body>
 
 <div id="starter" onclick="begin()">
-    <h1 style="font-size: 40px; margin:0;">Osha's World</h1>
+    <h1 style="font-size: 45px; margin:0;">Osha's School</h1>
     <p>Tap to Play!</p>
 </div>
 
 <div id="nav">
     <button class="nav-btn" style="background:var(--osha-blue)" onclick="go('num')">123</button>
     <button class="nav-btn" style="background:var(--osha-yellow); color:#333;" onclick="go('abc')">ABC</button>
-    <button class="nav-btn" style="background:var(--osha-purple)" onclick="go('menu')">Trace</button>
+    <button class="nav-btn" style="background:var(--osha-green)" onclick="go('menu')">Trace</button>
     <button class="nav-btn" style="background:var(--osha-pink)" onclick="go('draw')">Draw</button>
 </div>
 
 <div id="match-screen" class="screen">
     <div class="match-card">
         <div id="target-val" class="big-val">1</div>
-        <div id="target-apples" style="font-size: 35px; margin-top:5px;"></div>
+        <div id="target-apples" style="font-size: 45px; margin-top:10px;"></div>
     </div>
-    <div id="match-choices" style="display: flex; gap: 12px;"></div>
+    <div id="match-choices" style="display: flex; gap: 15px;"></div>
 </div>
 
 <div id="menu-screen" class="screen">
@@ -75,17 +82,21 @@
 </div>
 
 <div id="draw-screen" class="screen">
-    <div class="scroll-bar" id="colors"></div>
-    <div class="scroll-bar" id="stamps"></div>
+    <div class="toolbar-container">
+        <div class="scroll-bar" id="colors"></div>
+        <div class="scroll-bar" id="stamps"></div>
+    </div>
     <div class="canvas-container">
         <div id="trace-hint"></div>
         <canvas id="c"></canvas>
     </div>
-    <button onclick="clearC()" style="margin-top:8px; padding:8px 20px; border-radius:15px; border:2px solid #ddd; background:white; font-weight:bold;">Erase Everything</button>
+    <div style="display:flex; gap: 20px; margin-top: 10px;">
+        <button onclick="clearC()" style="padding:10px 25px; border-radius:15px; border:2px solid #ddd; background:white; font-weight:bold;">Erase Board</button>
+    </div>
 </div>
 
 <script>
-    const osha = "Osha";
+    const name = "Osha";
     let canvas, ctx, painting = false;
     let bType = 'color', bVal = '#ff85a1';
     
@@ -97,12 +108,12 @@
     function talk(t) {
         window.speechSynthesis.cancel();
         let m = new SpeechSynthesisUtterance(t);
-        m.rate = 0.9;
+        m.rate = 0.85; m.pitch = 1.1;
         window.speechSynthesis.speak(m);
     }
 
     function pop(f=500) {
-        if(navigator.vibrate) navigator.vibrate(20);
+        if(navigator.vibrate) navigator.vibrate(15);
         let ac = new (window.AudioContext || window.webkitAudioContext)();
         let o = ac.createOscillator(); let g = ac.createGain();
         o.connect(g); g.connect(ac.destination);
@@ -114,9 +125,8 @@
     function begin() {
         document.getElementById('starter').style.display = 'none';
         canvas = document.getElementById('c'); ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.45;
+        resizeCanvas();
         
-        // Build Toolbars
         const cDiv = document.getElementById('colors');
         colors.forEach(c => {
             let d = document.createElement('div'); d.className = 'dot'; d.style.background = c;
@@ -133,6 +143,12 @@
         go('num');
     }
 
+    function resizeCanvas() {
+        const container = document.querySelector('.canvas-container');
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+    }
+
     function highlight(el) {
         document.querySelectorAll('.dot, .stamp').forEach(i => i.classList.remove('active-tool'));
         el.classList.add('active-tool');
@@ -143,7 +159,11 @@
         document.querySelectorAll('.screen').forEach(sc => sc.classList.remove('active'));
         if(s === 'num' || s === 'abc') { document.getElementById('match-screen').classList.add('active'); setMatch(s); }
         else if(s === 'menu') { document.getElementById('menu-screen').classList.add('active'); setMenu(); }
-        else if(s === 'draw') { document.getElementById('draw-screen').classList.add('active'); document.getElementById('trace-hint').innerText = ""; setPaint(); }
+        else if(s === 'draw') { 
+            document.getElementById('draw-screen').classList.add('active'); 
+            resizeCanvas();
+            setPaint(); 
+        }
     }
 
     function setMatch(t) {
@@ -152,17 +172,17 @@
         document.getElementById('target-val').innerText = goal;
         let apps = document.getElementById('target-apples'); apps.innerHTML = "";
         if(t === 'num') for(let i=0; i<parseInt(goal); i++) apps.innerHTML += "🍎";
-        talk(`${osha}, find ${goal}`);
+        talk(`${name}, find ${goal}`);
 
         let area = document.getElementById('match-choices'); area.innerHTML = "";
         let p = [goal]; while(p.length < 3) { let r = list[Math.floor(Math.random() * list.length)]; if(!p.includes(r)) p.push(r); }
         p.sort(() => Math.random() - 0.5).forEach(v => {
-            let b = document.createElement('button'); b.style.width="80px"; b.style.height="80px"; b.style.fontSize="40px"; b.style.borderRadius="20px";
-            b.innerText = v;
+            let b = document.createElement('button'); b.style.width="90px"; b.style.height="90px"; b.style.fontSize="45px"; b.style.borderRadius="25px";
+            b.innerText = v; b.style.background = "white"; b.style.border = "4px solid #ddd";
             b.onclick = () => {
                 if(v == goal) {
                     pop(1000); 
-                    const wins = [`Well done ${osha}!`, `Great job ${osha}!`, `You are amazing ${osha}!`, `Osha is a superstar!`];
+                    const wins = [`Well done ${name}!`, `Amazing ${name}!`];
                     talk(wins[Math.floor(Math.random()*wins.length)]);
                     b.style.background = "#90EE90";
                     setTimeout(() => setMatch(t), 1200);
@@ -176,7 +196,11 @@
         let g = document.getElementById('picker-grid'); g.innerHTML = "";
         [...NUMS, ...ABC].forEach(i => {
             let b = document.createElement('div'); b.className = 'grid-item'; b.innerText = i;
-            b.onclick = () => { document.getElementById('trace-hint').innerText = i; go('draw'); };
+            b.onclick = () => { 
+                document.getElementById('trace-hint').innerText = i; 
+                go('draw'); 
+                talk(`Trace the ${i}`);
+            };
             g.appendChild(b);
         });
     }
@@ -185,7 +209,7 @@
         ctx.lineCap = 'round'; ctx.lineWidth = 15;
         canvas.ontouchstart = (e) => {
             let r = canvas.getBoundingClientRect(); let x = e.touches[0].clientX - r.left; let y = e.touches[0].clientY - r.top;
-            if(bType === 'stamp') { pop(900); ctx.font = "50px Arial"; ctx.fillText(bVal, x-25, y+20); }
+            if(bType === 'stamp') { pop(900); ctx.font = "60px Arial"; ctx.fillText(bVal, x-30, y+25); }
             else { painting = true; ctx.beginPath(); ctx.strokeStyle = bVal; ctx.moveTo(x, y); }
         };
         canvas.ontouchmove = (e) => {
@@ -195,7 +219,7 @@
         canvas.ontouchend = () => painting = false;
     }
 
-    function clearC() { pop(200); ctx.clearRect(0,0,canvas.width,canvas.height); talk("All clean!"); }
+    function clearC() { pop(200); ctx.clearRect(0,0,canvas.width,canvas.height); talk("Erase!"); }
 </script>
 </body>
 </html>
