@@ -3,37 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Osha's Adventure</title>
+    <title>Osha's School</title>
     <style>
         :root { --osha-pink: #ff85a1; --osha-blue: #4db8ff; --osha-yellow: #ffd700; --osha-green: #63d471; --osha-purple: #a29bfe; }
-        body { font-family: 'Comic Sans MS', cursive; margin: 0; overflow: hidden; background: #fffaf0; user-select: none; touch-action: none; }
         
-        /* Nav */
+        /* Fixed Font Logic for iPhone */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-style: normal !important; /* Forces letters to be straight, not italic */
+            margin: 0; 
+            overflow: hidden; 
+            background: #fffaf0; 
+            user-select: none; 
+            touch-action: none; 
+            -webkit-text-size-adjust: none;
+        }
+        
         #nav { background: white; padding: 10px; display: flex; justify-content: center; gap: 8px; border-bottom: 5px solid var(--osha-pink); }
-        .nav-btn { border: none; padding: 10px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .nav-btn { border: none; padding: 10px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 15px; font-style: normal; }
 
         .screen { height: 85vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
         .active { display: flex; }
 
-        /* Match Game */
-        .match-card { background: white; padding: 20px; border-radius: 30px; border: 5px solid var(--osha-blue); text-align: center; margin-bottom: 15px; min-width: 220px; }
-        .big-text { font-size: 100px; color: var(--osha-pink); line-height: 1; }
-        .sample-icons { font-size: 45px; margin-top: 10px; min-height: 50px; }
-        .choices { display: flex; gap: 12px; }
-        .choice-btn { width: 85px; height: 85px; font-size: 40px; border-radius: 25px; border: 4px solid #ddd; background: white; }
+        /* The Big Display Text - Fixed to be straight and bold */
+        .big-text { 
+            font-size: 120px; 
+            color: var(--osha-pink); 
+            font-weight: 900; 
+            font-style: normal !important; 
+            line-height: 1; 
+            text-decoration: none;
+            display: inline-block;
+        }
 
-        /* Drawing & Tools */
+        .match-card { background: white; padding: 20px; border-radius: 30px; border: 5px solid var(--osha-blue); text-align: center; margin-bottom: 15px; min-width: 220px; }
+        .sample-icons { font-size: 45px; margin-top: 10px; min-height: 50px; font-style: normal; }
+        
+        /* Fixed Buttons for iPhone */
+        .choice-btn { 
+            width: 85px; height: 85px; font-size: 45px; 
+            border-radius: 25px; border: 4px solid #ddd; 
+            background: white; font-weight: bold; font-style: normal;
+        }
+
+        /* Fixed Tracing Hint */
+        #trace-hint { 
+            position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-size: 300px; color: #f2f2f2; 
+            z-index: 0; font-weight: 900; 
+            font-style: normal !important; 
+            pointer-events: none; 
+        }
+
         .canvas-wrap { position: relative; background: white; border: 8px solid #eee; border-radius: 25px; margin: 5px 0; }
-        #trace-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 250px; color: #f2f2f2; z-index: 0; font-weight: bold; pointer-events: none; }
-        canvas { display: block; z-index: 1; position: relative; cursor: crosshair; }
+        canvas { display: block; z-index: 1; position: relative; }
 
         .toolbar { display: flex; gap: 10px; margin-bottom: 8px; background: white; padding: 10px; border-radius: 50px; box-shadow: 0 4px #ddd; }
-        .color-circle { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #eee; cursor: pointer; }
-        .stamp-btn { font-size: 30px; background: none; border: 2px solid #eee; border-radius: 10px; cursor: pointer; padding: 2px; }
+        .color-circle { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #eee; }
+        .stamp-btn { font-size: 30px; background: none; border: 2px solid #eee; border-radius: 10px; padding: 2px; font-style: normal; }
         .active-tool { border-color: #333 !important; transform: scale(1.1); }
 
-        .selector-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; max-height: 250px; overflow-y: auto; background: white; padding: 15px; border-radius: 20px; }
-        .sel-btn { padding: 15px; border: 2px solid #ddd; border-radius: 15px; background: #f9f9f9; font-size: 20px; font-weight: bold; }
+        .selector-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-height: 250px; overflow-y: auto; background: white; padding: 15px; border-radius: 20px; }
+        .sel-btn { padding: 15px; border: 2px solid #ddd; border-radius: 15px; background: #f9f9f9; font-size: 24px; font-weight: 900; font-style: normal; }
     </style>
 </head>
 <body>
@@ -50,7 +82,7 @@
         <div id="display-text" class="big-text">1</div>
         <div id="display-samples" class="sample-icons">🍎</div>
     </div>
-    <div id="match-choices" class="choices"></div>
+    <div id="match-choices" style="display: flex; gap: 12px;"></div>
 </div>
 
 <div id="trace-menu" class="screen">
@@ -65,19 +97,18 @@
         <button class="stamp-btn" onclick="setBrush('stamp', '🐶', this)">🐶</button>
         <button class="stamp-btn" onclick="setBrush('stamp', '🐱', this)">🐱</button>
         <button class="stamp-btn" onclick="setBrush('stamp', '🐠', this)">🐠</button>
-        <button class="stamp-btn" onclick="setBrush('stamp', '🐥', this)">🐥</button>
     </div>
     <div class="canvas-wrap">
         <div id="trace-hint"></div>
         <canvas id="canvas"></canvas>
     </div>
-    <button onclick="clearCanvas()" style="padding:10px 20px; border-radius:20px; border:2px solid #ddd; background:white;">Erase Board</button>
+    <button onclick="clearCanvas()" style="padding:10px 20px; border-radius:20px; border:2px solid #ddd; background:white; font-weight:bold;">Erase Board</button>
 </div>
 
 <script>
     const name = "Osha";
     let canvas, ctx, painting = false;
-    let toolType = 'color'; // 'color' or 'stamp'
+    let toolType = 'color';
     let currentToolVal = '#ff85a1';
 
     const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -121,7 +152,7 @@
         samples.innerHTML = "";
         if(mode === 'num') {
             for(let i=0; i<parseInt(goal); i++) samples.innerHTML += "🍎";
-            talk(`${name}, count the apples. Find number ${goal}!`);
+            talk(`${name}, look at number ${goal}. Find ${goal}!`);
         } else {
             samples.innerHTML = "✨";
             talk(`${name}, can you find the letter ${goal}?`);
@@ -177,7 +208,7 @@
         hideScreens();
         document.getElementById('draw-screen').classList.add('active');
         document.getElementById('trace-hint').innerText = "";
-        talk(`Draw anything you like, ${name}!`);
+        talk(`Draw a picture, ${name}!`);
         initCanvas();
     }
 
@@ -189,7 +220,7 @@
         canvas.height = window.innerHeight * 0.5;
         ctx = canvas.getContext('2d');
         ctx.lineCap = 'round';
-        ctx.lineWidth = 12;
+        ctx.lineWidth = 14;
 
         const getPos = (e) => {
             const rect = canvas.getBoundingClientRect();
@@ -213,9 +244,14 @@
         };
 
         canvas.onmousedown = handleStart;
-        canvas.ontouchstart = (e) => { e.preventDefault(); handleStart(e); };
-        canvas.onmousemove = (e) => { if(painting && toolType==='color') { const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
-        canvas.ontouchmove = (e) => { if(painting && toolType==='color') { const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
+        canvas.ontouchstart = (e) => { handleStart(e); };
+        canvas.onmousemove = canvas.ontouchmove = (e) => { 
+            if(painting && toolType==='color') { 
+                const p = getPos(e); 
+                ctx.lineTo(p.x, p.y); 
+                ctx.stroke(); 
+            } 
+        };
         window.onmouseup = window.ontouchend = () => painting = false;
     }
 
